@@ -1,0 +1,142 @@
+import personas.*
+import enfermedades.*
+
+describe "Temporada 1: test de personas y enfermedades"{
+	/*Enfermedades */
+	const malaria = new EnfermedadInfecciosa(celulasAmenazadas = 500)
+	const otitis = new EnfermedadInfecciosa(celulasAmenazadas = 100)
+	const lupus = new EnfermedadAutoInmune(celulasAmenazadas = 10000)
+	const malariaPulenta = new EnfermedadInfecciosa(celulasAmenazadas = 800)
+	
+	/*Personas */
+	
+	const logan = new Persona(temperatura = 36, celulas = 3000000)
+	const frank = new Persona(temperatura = 36, celulas = 3500000)
+	
+	test"Comprobando la temperatura de Logan con Malaria pasando 1 dia"{
+		logan.contraerEnfermedad(malaria)
+		logan.pasarUnDia()
+		assert.equals(36.5, logan.temperatura())
+	}
+	test"Comprobando la temperatura de Frank con Malaria pasando 1 dia"{
+		frank.contraerEnfermedad(malaria)
+		frank.pasarUnDia()
+		assert.equals(36.5, frank.temperatura())
+	}
+	
+	test"Comprobando la cantidad de celulas amenazadas por la Malaria al reproducirse"{
+		malaria.reproducir()
+		assert.equals(1000, malaria.celulasAmenazadas())
+	}
+	
+	test"Comprobando la cantidad de celulas amenazadas por la Otitis al reproducirse"{
+		otitis.reproducir()
+		assert.equals(200, otitis.celulasAmenazadas())
+	}
+	
+	test"Comprobando la cantidad de celulas amenazadas por la Malaria Pulenta al reproducirse"{
+		malariaPulenta.reproducir()
+		assert.equals(1600, malariaPulenta.celulasAmenazadas())
+	}
+	
+	test"Comprobando la temperatura de Logan con Otitis y pasando 1 dia"{
+		logan.contraerEnfermedad(otitis)
+		logan.pasarUnDia()
+		assert.equals(36.1, logan.temperatura())
+	}
+	
+	test"Comprobando la temperatura de Logan con la Malaria Pulenta y pasando 1 dia"{
+		logan.contraerEnfermedad(malariaPulenta)
+		logan.pasarUnDia()
+		assert.equals(36.8, logan.temperatura())
+	}
+	
+	test"Comprobando las celulas de Logan con la Lupus y pasando 1 dia"{
+		logan.contraerEnfermedad(lupus)
+		logan.pasarUnDia()
+		assert.equals(2990000, logan.celulas())
+	}
+	
+	test"Comprobando la temperatura de Frank con Otitis y pasando 1 dia"{
+		frank.contraerEnfermedad(otitis)
+		frank.pasarUnDia()
+		assert.equals(36.1, frank.temperatura())
+	}
+	
+	test"Comprobando la temperatura de Frank con la Malaria Pulenta y pasando 1 dia"{
+		frank.contraerEnfermedad(malariaPulenta)
+		frank.pasarUnDia()
+		assert.equals(36.8, frank.temperatura())
+	}
+	
+	test"Comprobando que la cantidad de enfermedades agresivas es cero en Logan"{
+		logan.contraerEnfermedad(malaria)
+		logan.contraerEnfermedad(otitis)
+		logan.contraerEnfermedad(lupus)
+		assert.equals(0, logan.cantidadDeCelulasAmenazadasPorEnfermedadesAgresivas())
+	}
+	
+	test"Comprobando que la enfermedad que mas afecta es lupus en Logan"{
+		logan.contraerEnfermedad(malaria)
+		logan.contraerEnfermedad(otitis)
+		logan.contraerEnfermedad(lupus)
+		assert.equals(lupus, logan.enfermedadQueMasCelulasAfecta())
+	}
+	
+	test"Comprobando la cantidad de temperatura y celulas de Logan al tener 3 enfermedades y pasado 1 dia, en este caso, malaria, otitis y lupus"{
+		logan.contraerEnfermedad(malaria)
+		logan.contraerEnfermedad(otitis)
+		logan.contraerEnfermedad(lupus)
+		logan.pasarUnDia()
+		assert.equals(36.6, logan.temperatura())
+		assert.equals(2990000, logan.celulas())
+	}
+	
+	test "Frank queda en Coma al haber pasado tantos con malaria pulenta sin medicarse"{
+		frank.contraerEnfermedad(malariaPulenta)
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		frank.pasarUnDia()
+		assert.that(frank.estaEnComa())
+	}
+}
+
+describe "Temporada2: Doctores que atienden a personas"{
+	/*Enfermedades*/
+	
+	const malaria = new EnfermedadInfecciosa(celulasAmenazadas = 500)
+	const lupus = new EnfermedadAutoInmune(celulasAmenazadas = 10000)
+	
+	/*Persona, medico y jefe medico */
+	const logan = new Persona(temperatura = 36, celulas = 3000000)
+	const cameron = new Medico(temperatura = 36, celulas = 2500000, dosis = 10)
+	const drHouse = new JefeMedico(temperatura = 36, celulas = 4000000, dosis = 20)
+		
+	test"test Cameron atiende a Logan que tiene malaria"{
+		logan.contraerEnfermedad(malaria)
+		cameron.atender(logan)
+		assert.equals(350, malaria.celulasAmenazadas())
+	}
+	
+	test"House atiende a Cameron"{
+		cameron.contraerEnfermedad(malaria)
+		drHouse.elJefeAntiendeA(cameron)
+		assert.equals(50, malaria.celulasAmenazadas())
+	}
+	
+	test "House contrae la muerte"{
+		drHouse.contraerEnfermedad(muerte)
+		drHouse.pasarUnDia()
+		assert.equals(0, drHouse.temperatura())
+	}
+}
