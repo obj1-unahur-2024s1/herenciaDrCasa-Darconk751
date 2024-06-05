@@ -58,6 +58,8 @@ class JefeMedico inherits Medico {
 	override method atender(unaPersona){
 		medicos.anyOne().atender(unaPersona)	
 	}
+	
+	/*Tengo mis dudas respecto a esto porque para forzar que la muerte haga su efecto de matar a House pues no tiene que poder automedicarse, tuve que forzar la solucion pero no le encuentro otra forma, faltaba especificar mas yo creo*/
 	override method contraerEnfermedad(unaEnfermedad){
 		enfermedadesContraidas.add(unaEnfermedad)
 	}
